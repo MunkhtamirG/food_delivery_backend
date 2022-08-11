@@ -1,4 +1,5 @@
 const db = require("./db");
+const bcrypt = require("bcryptjs");
 
 async function getAllUsers() {
   const data = await db.query("SELECT * FROM users");
@@ -26,10 +27,12 @@ async function createUser(params) {
   const email = params.email;
   const address = params.address;
   const phone = params.phone;
-  const role_id = params.role_id;
+  const password = params.password;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log(hashedPassword);
   const data = await db.query(
-    " INSERT INTO users (firstName, lastName, email, address, phone, role_id) VALUES (?, ?, ?, ?, ?, ?)",
-    [firstName, lastName, email, address, phone, role_id]
+    " INSERT INTO users (firstName, lastName, email, address, phone, password) VALUES (?, ?, ?, ?, ?, ?)",
+    [firstName, lastName, email, address, phone, hashedPassword]
   );
   return {
     data: data,
@@ -61,10 +64,18 @@ async function updateUser(params) {
   };
 }
 
+async function findUserByEmail(email) {
+  const data = await db.query("select * from users where email=? ", [email]);
+  return {
+    data: data,
+  };
+}
+
 module.exports = {
   getAllUsers,
   createUser,
   deleteUser,
   updateUser,
   getOneUser,
+  findUserByEmail,
 };
