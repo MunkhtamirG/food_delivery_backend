@@ -52,7 +52,7 @@ router.post("/register", async (req, res, next) => {
             expiresIn: "2h",
           }
         );
-        res.json(await foods.createUser(params));
+        await foods.createUser(params);
         res.status(200).json({
           success: true,
           data: { userName: firstName, email: email },

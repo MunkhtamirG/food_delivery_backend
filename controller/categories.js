@@ -25,7 +25,11 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", auth, async (req, res, next) => {
   try {
     const params = req.body;
-    res.json(await categories.createCategory(params));
+    await categories.createCategory(params);
+    res.status(200).json({
+      success: true,
+      data: params,
+    });
   } catch (error) {
     console.error(error.message);
     next(error);
