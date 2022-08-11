@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const foods = require("../services/users");
+const categories = require("../services/categories");
+const auth = require("../middleware/auth");
 
-router.get("/", async (req, res, next) => {
+router.get("/", auth, async (req, res, next) => {
   try {
-    res.json(await foods.getAllUsers());
+    res.json(await categories.getAllCategories());
   } catch (err) {
     console.error(err.message);
     next(err);
@@ -14,17 +15,21 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   const id = req.params.id;
   try {
-    res.json(await foods.getOneUser(id));
+    res.json(await categories.getOneCategory(id));
   } catch (err) {
     console.error(err.message);
     next(err);
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", auth, async (req, res, next) => {
   try {
     const params = req.body;
-    res.json(await foods.createUser(params));
+    await categories.createCategory(params);
+    res.status(200).json({
+      success: true,
+      data: params,
+    });
   } catch (error) {
     console.error(error.message);
     next(error);
@@ -34,7 +39,8 @@ router.post("/", async (req, res, next) => {
 router.delete("/", async (req, res, next) => {
   try {
     const params = req.body;
-    res.json(await foods.deleteUser(params));
+    console.log(params);
+    res.json(await categories.deleteCategory(params));
   } catch (error) {
     console.error(error.message);
     next(error);
@@ -44,7 +50,7 @@ router.delete("/", async (req, res, next) => {
 router.put("/", async (req, res, next) => {
   try {
     const params = req.body;
-    res.json(await foods.updateUser(params));
+    res.json(await categories.updateCategory(params));
   } catch (error) {
     console.error(error.message);
     next(error);

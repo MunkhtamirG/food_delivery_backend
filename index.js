@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const categoryRouter = require("./routes/categories");
-const foodRouter = require("./routes/foods");
-const userRouter = require("./routes/users");
-const roleRouter = require("./routes/roles");
+const categoryRouter = require("./controller/categories");
+const foodRouter = require("./controller/foods");
+const userRouter = require("./controller/users");
+const roleRouter = require("./controller/roles");
 const PORT = process.env.PORT;
 const cors = require("cors");
 
