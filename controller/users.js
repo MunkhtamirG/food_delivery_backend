@@ -121,6 +121,16 @@ router.delete("/", async (req, res, next) => {
   }
 });
 
+router.get("/order", async (req, res, next) => {
+  try {
+    const params = req.body;
+    res.json(await transaction.deleteUser(params));
+  } catch (error) {
+    console.error(error.message);
+    next(error);
+  }
+});
+
 router.put("/", async (req, res, next) => {
   try {
     const params = req.body;
