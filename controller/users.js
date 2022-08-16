@@ -125,7 +125,7 @@ router.delete("/", async (req, res, next) => {
 router.get("/order", async (req, res, next) => {
   try {
     const params = req.body;
-    res.json(await transaction.createOrder());
+    res.json(await transaction.createOrder(params));
   } catch (error) {
     console.error(error.message);
     next(error);
