@@ -3,6 +3,7 @@ const router = express.Router();
 const foods = require("../services/users");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const transaction = require("../services/transaction");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -124,7 +125,7 @@ router.delete("/", async (req, res, next) => {
 router.get("/order", async (req, res, next) => {
   try {
     const params = req.body;
-    res.json(await transaction.deleteUser(params));
+    res.json(await transaction.createOrder());
   } catch (error) {
     console.error(error.message);
     next(error);
