@@ -1,38 +1,46 @@
-const db = require("./db");
+const config = require("../config");
+const mysql = require("mysql2/promise");
 
 async function createOrder() {
-  db.query("set autocommit = 0");
+  const connection = await mysql.createConnection(config.db);
+  await connection.execute("set autocommit = 0");
   console.log("setting off the autocommit");
 
-  db.query("set session transaction isolation level read committed");
+  connection.execute("set session transaction isolation level read committed");
   console.log("setting the transactiun isollation level");
 
-  db.beginTransaction();
+  await connection.beginTransaction();
   console.log("starting transaction");
 
   try {
-    db.query(
+    connection.execute(
       "insert into orders (customer_id, deliveryman_id, ordered_date, order_status, total_fee) values (?, ?, ?, ?, ?)",
-      [1, 5, "2022-08-15 12:26:26", 1, 6000]
+      [1, 2, "2022-08-15 12:26:26", 1, 6000]
     );
     console.log("inserted data to orders");
 
-    db.query("set @id = last_insert_id()");
+    const [rows] = await connection.execute(
+      "select last_insert_id() as order_id"
+    );
     console.log(" getting last id of the new inserted order");
 
-    db.query(
+    connection.execute(
       "insert into order_detail (food_id, food_price, order_id) values ( ?, ?,?)",
-      [1, 180, "@id"]
+      [1, 180, rows[0].order_id]
     );
     console.log("insert data into order detail");
 
-    db.commit();
+    connection.commit();
     console.log("commit successfully");
   } catch (error) {
     console.error("Error occured whil creating order: " + error.message);
-    db.rollBack();
+    connection.rollback();
     console.error("Transaction is successfully rolled back");
   }
 }
 
-module.exports = { createOrder };
+(async function testOrder() {
+  console.log(await createOrder());
+})();
+
+// module.exports = { createOrder };
